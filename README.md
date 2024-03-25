@@ -198,8 +198,7 @@ curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/vlan-tag?i
 Expected output
 ```
 {
-    "mode": "trunk",
-    "vlans": "1,12,200,300"
+    "result": "Vlan 680 removed from interface Gi1/0/23 on device 192.168.0.10"
 }
 ```
 

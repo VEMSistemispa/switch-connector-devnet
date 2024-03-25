@@ -39,11 +39,12 @@ open cmd:
 
 # How to use
 
+Flask server is running on port 8080 and listening to localhost interface. You can configure default port by setting (PORT=8090) enviroment variable.
 We recommend using Postman to try and interact with this solution. In this readme we'll include cURL examples which is also fine
 
 ### Device Inventory
 First thing first we need to provide a device inventory; a list of devices info that Switch Connector needs in order to interact and configure devices.
-Prepare and POST a JSON to http://localhost:8080/inventory
+Prepare and POST a JSON to **http://localhost:8080/inventory**
 ```
 curl --location 'http://localhost:8080/inventory' \
 --header 'Accept: application/json' \
@@ -63,7 +64,8 @@ curl --location 'http://localhost:8080/inventory' \
 
 ## Other endpoints 
 ### Gathering hardware info from a target device
-Query parameters: ip (ip of the devices to be queried)
+*Endpoint*: **/switch/hardware/info**
+*Query parameters*: **ip** (ip of the device to be queried)
 ```
 curl --location 'http://localhost:8080/switch/hardware/info?ip=192.168.0.10'
 ```
@@ -81,7 +83,8 @@ Expected output
 ```
 
 ### Gathering vlan list of vlan db from a target device
-Query parameters: ip (ip of the devices to be queried)
+*Endpoint*: GET **/switch/vlan**
+*Query parameters*: **ip** (ip of the device to be queried)
 ```
 curl --location 'http://localhost:8080/switch/vlan?ip=192.168.0.10' \
 --header 'Accept: application/json' \
@@ -99,12 +102,12 @@ Expected output
         "name": "MGMT"
     },
     {
-        "id": 401,
-        "name": "TEST401"
+        "id": 200,
+        "name": "TEST200"
     },
     {
-        "id": 402,
-        "name": "TEST402"
+        "id": 300,
+        "name": "TEST300"
     },
     {
         "id": 500,
@@ -112,9 +115,12 @@ Expected output
     }
 ]
 ```
-### Gathering switchport mode of a specific interface on a target device
-Query parameters: ip (ip of the devices to be queried)
-Route parameters: interface to gather info
+
+
+### Gathering switchport configuration of a specific interface on a target device
+*Endpoint*: GET **/switch/interfaces/{interface}/switchport-conf**
+*Query parameters*: **ip** (ip of the devices to be queried)
+*Route parameters*: **interface** from which gather info (MUST be URL encoded)
 ```
 curl --location --request GET 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/switchport-conf?ip=192.168.0.10' \
 --header 'Accept: application/json' \
@@ -128,14 +134,31 @@ Expected output
     "vlans": "1,12,200,300,600"
 }
 ```
-### Interface tagging on target device
-Route parameters: interface to configure
-Body parameters: 
-    - ip (ip of the devices to be queried) 
-    - vlan_ids (vlan id the be setted or replaced) type: str (vlan ids are separated by a comma 1,200,300)
-    - append (append vlan_ids or replace them)
+
+### Changing switchport mode of a specific interface on a target device
+*Endpoint*: POST **/switch/interfaces/{interface}/switchport-mode**
+*Query parameters*:
+    - **ip** (ip of the device to be queried)
+    - **mode** (interface mode to be set: "access" or "trunk")
+*Route parameters*: **interface** from which gather info (MUST be URL encoded)
 ```
-curl --location 'http://localhost:8080/switch/interfaces/Te1%2F0%2F45/vlan-tag' \
+curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/switchport-mode?ip=192.168.0.10&mode=access' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json'
+```
+Note that Gi1/0/23 is passed as a route parameer and MUST be URL encoded
+*Expected output*: *HTTP 200* if configuration was applied successfully
+
+
+### Interface tagging on target device
+*Endpoint*: POST **/switch/interfaces/{interface}/vlan-tag**
+*Route parameters*: **interface** to configure (MUST be URL encoded)
+*Body parameters*: 
+    - **ip** (ip of the devices to be queried) 
+    - **vlan_ids** (vlan id the be setted or replaced) type: str (vlan ids are separated by a comma 1,200,300)
+    - **append** (append vlan_ids or replace them)
+```
+curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/vlan-tag' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
 --data '{
@@ -149,6 +172,25 @@ Expected output
 {
     "mode": "trunk",
     "vlans": "1,12,200,300,680"
+}
+```
+
+### Interface UNtagging on target device
+*Endpoint*: DELETE **/switch/interfaces/{interface}/vlan-tag**
+*Route parameters*: **interface** to configure (MUST be URL encoded)
+*Query parameters*: 
+    - **ip** (ip of the devices to be queried) 
+    - **vlan_id** (vlan id the be removed)
+```
+curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/vlan-tag?ip=192.168.0.10&vlan_id=680' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json'
+```
+Expected output
+```
+{
+    "mode": "trunk",
+    "vlans": "1,12,200,300"
 }
 ```
 

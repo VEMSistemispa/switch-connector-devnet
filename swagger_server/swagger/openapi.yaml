@@ -238,37 +238,6 @@ paths:
                       type: string
         "502":
           description: An error occured while obtaining vlan list.
-    delete:
-      summary: Remove a configured vlan from device.
-      description: |
-        Remove a configured vlan from device.
-      operationId: delete_vlan_from_list
-      parameters:
-        - name: ip
-          in: query
-          description: Ipv4 of the switch to query
-          required: true
-          style: form
-          explode: true
-          schema:
-            $ref: '#/components/schemas/Ipv4Addr'
-        - in: query
-          name: vlan_id
-          schema:
-            type: integer
-          description: vlan number to be removed.
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  result:
-                    type: string
-        "502":
-          description: An error occured while obtaining vlan list.
 
 components:
   schemas:

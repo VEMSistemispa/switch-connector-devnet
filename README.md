@@ -65,6 +65,7 @@ curl --location 'http://localhost:8080/inventory' \
 ## Other endpoints 
 ### Gathering hardware info from a target device
 *Endpoint*: **/switch/hardware/info**
+
 *Query parameters*: **ip** (ip of the device to be queried)
 ```
 curl --location 'http://localhost:8080/switch/hardware/info?ip=192.168.0.10'
@@ -84,6 +85,7 @@ Expected output
 
 ### Gathering vlan list of vlan db from a target device
 *Endpoint*: GET **/switch/vlan**
+
 *Query parameters*: **ip** (ip of the device to be queried)
 ```
 curl --location 'http://localhost:8080/switch/vlan?ip=192.168.0.10' \
@@ -119,7 +121,9 @@ Expected output
 
 ### Gathering switchport configuration of a specific interface on a target device
 *Endpoint*: GET **/switch/interfaces/{interface}/switchport-conf**
+
 *Query parameters*: **ip** (ip of the devices to be queried)
+
 *Route parameters*: **interface** from which gather info (MUST be URL encoded)
 ```
 curl --location --request GET 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/switchport-conf?ip=192.168.0.10' \
@@ -138,8 +142,9 @@ Expected output
 ### Changing switchport mode of a specific interface on a target device
 *Endpoint*: POST **/switch/interfaces/{interface}/switchport-mode**
 *Query parameters*:
-    - **ip** (ip of the device to be queried)
-    - **mode** (interface mode to be set: "access" or "trunk")
+- **ip** (ip of the device to be queried)
+- **mode** (interface mode to be set: "access" or "trunk")
+    
 *Route parameters*: **interface** from which gather info (MUST be URL encoded)
 ```
 curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/switchport-mode?ip=192.168.0.10&mode=access' \
@@ -152,11 +157,13 @@ Note that Gi1/0/23 is passed as a route parameer and MUST be URL encoded
 
 ### Interface tagging on target device
 *Endpoint*: POST **/switch/interfaces/{interface}/vlan-tag**
+
 *Route parameters*: **interface** to configure (MUST be URL encoded)
+
 *Body parameters*: 
-    - **ip** (ip of the devices to be queried) 
-    - **vlan_ids** (vlan id the be setted or replaced) type: str (vlan ids are separated by a comma 1,200,300)
-    - **append** (append vlan_ids or replace them)
+- **ip** (ip of the devices to be queried) 
+- **vlan_ids** (vlan id the be setted or replaced) type: str (vlan ids are separated by a comma 1,200,300)
+- **append** (append vlan_ids or replace them)
 ```
 curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/vlan-tag' \
 --header 'Accept: application/json' \
@@ -177,10 +184,12 @@ Expected output
 
 ### Interface UNtagging on target device
 *Endpoint*: DELETE **/switch/interfaces/{interface}/vlan-tag**
+
 *Route parameters*: **interface** to configure (MUST be URL encoded)
+
 *Query parameters*: 
-    - **ip** (ip of the devices to be queried) 
-    - **vlan_id** (vlan id the be removed)
+- **ip** (ip of the devices to be queried) 
+- **vlan_id** (vlan id the be removed)
 ```
 curl --location 'http://localhost:8080/switch/interfaces/Gi1%2F0%2F23/vlan-tag?ip=192.168.0.10&vlan_id=680' \
 --header 'Accept: application/json' \

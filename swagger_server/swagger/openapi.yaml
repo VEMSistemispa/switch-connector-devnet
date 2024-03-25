@@ -1,0 +1,306 @@
+openapi: 3.0.0
+info:
+  title: Switch device service
+  description: Connector API to switch devices
+  contact:
+    email: daniele.rossi@vem.com
+  version: 1.0.0
+paths:
+  /inventory:
+    post:
+      summary: create or replace a device inventory
+      description: create or replace a device inventory
+      operationId: update_device_inventory
+      requestBody:
+        description: Inventory devices to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+        required: true
+      responses:
+        "201":
+          description: Inventory created correctly
+        "409":
+          description: Inventory already created
+        "502":
+          description: the request generated an error that cannot be handled directly
+            by the server.
+  /switch/hardware/info:
+    get:
+      summary: get hardware info
+      description: |
+        Retrieve serial number and model number from the specified switch.
+      operationId: get_hardware_info
+      parameters:
+      - name: ip
+        in: query
+        description: Ipv4 of the switch to query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Ipv4Addr'
+      responses:
+        "200":
+          description: OK     
+  /switch/interfaces/{interface_name}/switchport-conf:
+    get:
+      summary: get switchport configuration information associated with a switch interface.
+      description: "Retrieve interface configuration information for the specified switch."
+      operationId: get_interface_configuration_information
+      parameters:
+      - name: ip
+        in: query
+        description: Ipv4 of the switch to query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Ipv4Addr'
+      - name: interface_name
+        in: path
+        description: Full name of the desired interface
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: path
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterfaceSwitchportConfigurationInformation'
+        "404":
+          description: |
+            Switch with specified UUID was not found or interface with specified name was not found.
+        "502":
+          description: Unable to parse switch informations.
+        "504":
+          description: Physical switch did not respond.
+  /switch/interfaces/{interface_name}/vlan-tag:
+    post:
+      summary: Add allowed vlan on a switch interface.
+      description: "Add allowed vlan on a switch interface."
+      operationId: tag_interface
+      parameters:
+        - name: interface_name
+          in: path
+          description: Full name of the desired interface
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - ip
+                - vlan_ids
+              properties:
+                ip:
+                  description: Ipv4 of the switch to query
+                  $ref: '#/components/schemas/Ipv4Addr'
+                vlan_ids:
+                  description: Vlans to be tagged on specified interface
+                  type: string
+                append:
+                  description: Determine if vlan must be appended to exinsting ones or not. Only apply if mode is trunk, not access.
+                  type: boolean
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterfaceSwitchportConfigurationInformation'
+        "404":
+          description: |
+            Switch with specified UUID was not found or interface with specified name was not found.
+        "502":
+          description: Unable to parse switch informations.
+        "504":
+          description: Physical switch did not respond.
+    delete:
+      summary: Remove a vlan on a specific switch interface configured in trunk mode.
+      description: Remove a vlan on a specific switch interface configured in trunk mode.
+      operationId: untag_interface
+      parameters:
+        - name: interface_name
+          in: path
+          description: Full name of the desired interface
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: string
+            format: path
+        - name: ip
+          in: query
+          description: Ipv4 of the switch to query
+          required: true
+          style: form
+          explode: true
+          schema:
+            $ref: '#/components/schemas/Ipv4Addr'
+        - name: vlan_id
+          in: query
+          description: Vlans to be removed from allowed vlan on specified trunked interface
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: |
+            Switch with specified UUID was not found or interface with specified name was not found.
+        "502":
+          description: Unable to parse switch informations.
+        "504":
+          description: Physical switch did not respond.
+  /switch/interfaces/{interface_name}/switchport-mode:
+    patch:
+      summary: set switchport mode associated with a switch interface.
+      description: "Set switchport mode for a targeted interface."
+      operationId: switch_port_mode
+      parameters:
+      - name: interface_name
+        in: path
+        description: Full name of the desired interface
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          format: path
+      - name: ip
+        in: query
+        description: Ipv4 of the switch to query
+        required: true
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/Ipv4Addr'
+      - name: mode
+        in: query
+        description: Switchport mode to be set
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: "Interface mode changed successfully."
+        "404":
+          description: |
+            Switch with specified UUID was not found or interface with specified name was not found.
+        "502":
+          description: Unable to parse switch informations.
+        "504":
+          description: Physical switch did not respond.
+  /switch/vlan:
+    get:
+      summary: Retrieve configured vlans from device.
+      description: |
+        Retrieve configured vlans from device.
+      operationId: get_vlan_list
+      parameters:
+        - name: ip
+          in: query
+          description: Ipv4 of the switch to query
+          required: true
+          style: form
+          explode: true
+          schema:
+            $ref: '#/components/schemas/Ipv4Addr'
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+        "502":
+          description: An error occured while obtaining vlan list.
+    delete:
+      summary: Remove a configured vlan from device.
+      description: |
+        Remove a configured vlan from device.
+      operationId: delete_vlan_from_list
+      parameters:
+        - name: ip
+          in: query
+          description: Ipv4 of the switch to query
+          required: true
+          style: form
+          explode: true
+          schema:
+            $ref: '#/components/schemas/Ipv4Addr'
+        - in: query
+          name: vlan_id
+          schema:
+            type: integer
+          description: vlan number to be removed.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: string
+        "502":
+          description: An error occured while obtaining vlan list.
+
+components:
+  schemas:
+    Inventory:
+      type: array
+      items:
+        $ref: '#/components/schemas/InventoryDevice'
+    InventoryDevice:
+      type: object
+      properties:
+        ip:
+          $ref: '#/components/schemas/Ipv4Addr'
+        username:
+          type: string
+        password:
+          type: string
+
+    MACAddress:
+      pattern: "^([0-9A-Fa-f]{2}[:]){5}([0-9A-Fa-f]{2})$"
+      type: string
+
+    InterfaceSwitchportConfigurationInformation:
+      type: object
+      required: 
+        - mode
+        - vlans
+      properties:
+        mode:
+          type: string
+        vlans:
+          type: string
+
+    Ipv4Addr:
+      pattern: "^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$"
+      type: string

@@ -20,7 +20,7 @@ load_dotenv()
 LOGGER_CONFIGURATION_PATH = os.path.join(pathlib.Path(__file__).parents[1], 'logging.conf')
 PORT = os.getenv('PORT') or 8080
 MODE = os.getenv('MODE') or 'development'
-LOG_LEVEL = os.getenv('LOG_LEVEL')
+LOG_LEVEL = os.getenv('LOG_LEVEL') or 'DEBUG'
 POSSIBLE_LOG_LEVELS = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
 
 def main():

@@ -27,8 +27,8 @@ Requirements: [Python](https://www.python.org/) , [Pip](https://pip.pypa.io/en/s
 
 open cmd:
 
-    git clone https://github.com/giacomotontini/SwitchConnector-DevNet.git
-    cd SwitchConnector-DevNet
+    git clone https://github.com/VEMSistemispa/switch-connector-devnet.git
+    cd switch-connector-devnet
     
     python -m venv sc-venv
     source ./sc-venv/bin/activate

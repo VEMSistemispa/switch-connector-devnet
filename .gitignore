@@ -79,3 +79,5 @@ doc/
 pyvenv.cfg
 
 .venv
+venv/
+sc-venv/

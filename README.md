@@ -23,20 +23,37 @@ Hiding the protocol being used to configure the device (ssh or restconf) and out
 
 # Install and run
 
-Requirements: [Python](https://www.python.org/) , [Pip](https://pip.pypa.io/en/stable/installation/)
+Requirements:
+- A Linux (or MacOS) based system is mandatory. A required library (Genie/PyATS) is not being distributed for Windows systems
+- [Python](https://www.python.org/) version 3.09 an above
+- [Pip](https://pip.pypa.io/en/stable/installation/)
 
-open cmd:
+On a cmd shell:
 
+1) Clone the repo
+```
     git clone https://github.com/VEMSistemispa/switch-connector-devnet.git
+```
+2) Move into project folder
+```
     cd switch-connector-devnet
-    
+```
+3) Create a virtual enviroment 
+```
     python -m venv sc-venv
+```
+4) Activate it. (note: this is for linux based system) See [here](https://docs.python.org/3/library/venv.html#how-venvs-work) for more.
+```
     source ./sc-venv/bin/activate
-
+```
+5) Install project's dependencies
+```
     pip install -r requirements.txt
-
+```
+6) Run Switch-Connector
+```
     python -m swagger_server
-
+```
 # How to use
 
 Flask server is running on port 8080 and listening to localhost interface. You can configure default port by setting (PORT=8090) enviroment variable.

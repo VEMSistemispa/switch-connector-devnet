@@ -8,8 +8,8 @@ waitress==2.1.2
 python-dotenv==0.20.0
 colorlog==6.5.0
 textfsm==1.1.2
-genie==22.6
-pyats==22.6
+genie==24.3
+pyats==24.3
 scrapli[full]==2022.1.30
 pdoc==12.0.2
 CiscoInterfaceNameConverter==0.0.1

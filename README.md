@@ -25,7 +25,7 @@ Hiding the protocol being used to configure the device (ssh or restconf) and out
 
 Requirements:
 - A Linux (or MacOS) based system is mandatory. A required library (Genie/PyATS) is not being distributed for Windows systems
-- [Python](https://www.python.org/) version 3.09 an above
+- [Python](https://www.python.org/) version 3.9 an above
 - [Pip](https://pip.pypa.io/en/stable/installation/)
 
 On a cmd shell:
